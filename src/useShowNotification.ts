@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 export type NotificationAction = {
   action: string;
-  title: string;
+  title?: string;
   body: string;
 };
 
@@ -10,7 +10,7 @@ export type NotificationClickHandler = (event: FocusEvent & { notification: Noti
 
 export type NotificationShowOptions = {
   /** Notification title */
-  title: string;
+  title?: string;
   /** Notification body/message */
   body?: string;
   /** Notification icon URL */
@@ -48,6 +48,7 @@ export function useShowNotification() {
       }
 
       const {
+        title: _title,
         body = '',
         icon,
         tag,
@@ -83,7 +84,7 @@ export function useShowNotification() {
           timestamp: timeout ? Date.now() + timeout : undefined,
           requireInteraction,
           ...rest,
-        });
+        } as NotificationOptions & { image?: string });
 
         // Set click handler if provided
         if (onClick) {
