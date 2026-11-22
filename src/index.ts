@@ -43,4 +43,30 @@ export type UseNotificationPermissionResult = {
   permissionSteps?: PermissionSteps | null;
   openNotificationSettings: () => boolean;
   isPermissionPermanentlyDenied: boolean;
+  /** Browser and OS information for debugging */
+  browserInfo: {
+    browser: string;
+    os: string;
+    isChrome: boolean;
+    isEdge: boolean;
+    isSafari: boolean;
+    isFirefox: boolean;
+    isiOS: boolean;
+    isAndroid: boolean;
+  };
+};
+
+/**
+ * Browser and OS info from getBrowserInfo()
+ * Used for platform-specific notification guidance
+ */
+export type BrowserInfo = {
+  browser: string;
+  os: string;
+  isChrome: boolean;
+  isEdge: boolean;
+  isSafari: boolean;
+  isFirefox: boolean;
+  isiOS: boolean;
+  isAndroid: boolean;
 };
