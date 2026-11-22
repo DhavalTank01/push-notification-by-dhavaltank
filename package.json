@@ -1,0 +1,47 @@
+{
+  "name": "push-notification-by-dhavaltank",
+  "version": "1.0.0",
+  "description": "A lightweight JavaScript push notification library for React and Next.js applications",
+  "main": "dist/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "prepare": "npm run build",
+    "publish": "npm run build && npm publish --access public"
+  },
+  "keywords": [
+    "notification",
+    "push-notification",
+    "react-notification",
+    "nextjs-notification",
+    "service-worker"
+  ],
+  "author": "Dhaval Tank",
+  "license": "MIT",
+  "engines": {
+    "node": ">=26.13.1",
+    "npm": ">=10.0.0"
+  },
+  "peerDependencies": {
+    "next": "^15.0.0 || ^14.0.0",
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^29.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-terser": "^1.0.2",
+    "@types/node": "^26.6.6",
+    "@types/react": "^19.3.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "rollup-plugin-typescript2": "^0.37.0"
+  },
+  "dependencies": {
+    "typescript": "^4.9.5"
+  }
+}
