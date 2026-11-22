@@ -1,5 +1,5 @@
 export { useNotificationPermission } from './useNotificationPermission';
-export { useShowNotification } from './useShowNotification';
+export { useShowNotification, type NotificationAction } from './useShowNotification';
 export { registerServiceWorker } from './serviceWorker';
 
 /**
@@ -43,7 +43,6 @@ export type UseNotificationPermissionResult = {
   permissionSteps?: PermissionSteps | null;
   openNotificationSettings: () => boolean;
   isPermissionPermanentlyDenied: boolean;
-  /** Browser and OS information for debugging */
   browserInfo: {
     browser: string;
     os: string;
@@ -54,6 +53,40 @@ export type UseNotificationPermissionResult = {
     isiOS: boolean;
     isAndroid: boolean;
   };
+};
+
+/**
+ * Click handler for notification click events
+ * Receives MouseEvent and the Notification object
+ */
+export type NotificationClickHandler = (event: MouseEvent, notification: Notification) => void;
+
+/**
+ * Options for showing a notification
+ */
+export type NotificationShowOptions = {
+  /** Notification title */
+  title?: string;
+  /** Notification body/message */
+  body?: string;
+  /** Notification icon URL */
+  icon?: string;
+  /** Notification tag for grouping/updating */
+  tag?: string;
+  /** Notification image URL */
+  image?: string;
+  /** Direction of notification flow ('auto', 'ltr', 'rtl') */
+  dir?: 'auto' | 'ltr' | 'rtl';
+  /** Whether to show a vibration pattern */
+  vibrate?: number[];
+  /** Whether the notification should auto-close after a timeout */
+  timeout?: number;
+  /** Custom click handler */
+  onClick?: NotificationClickHandler;
+  /** Whether the notification requires attention */
+  requireInteraction?: boolean;
+  /** Whether to focus the window on click */
+  focusOnClick?: boolean;
 };
 
 /**

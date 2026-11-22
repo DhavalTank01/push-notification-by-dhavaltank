@@ -1,13 +1,23 @@
 import { useState, useEffect, useCallback } from 'react';
 
+/**
+ * Action types for notification click handling
+ */
 export type NotificationAction = {
   action: string;
   title?: string;
   body: string;
 };
 
-export type NotificationClickHandler = (event: FocusEvent & { notification: Notification }) => void;
+/**
+ * Click handler type for notification
+ * Receives the mouse event and the notification object
+ */
+export type NotificationClickHandler = (event: MouseEvent, notification: Notification) => void;
 
+/**
+ * Options for showing a notification
+ */
 export type NotificationShowOptions = {
   /** Notification title */
   title?: string;
@@ -19,9 +29,7 @@ export type NotificationShowOptions = {
   tag?: string;
   /** Notification image URL */
   image?: string;
-  /** Notification timestamp */
-  timestamp?: number;
-  /** Direction of notification flow ('auto', 'ltr', 'rtl') */
+  /** Notification direction ('auto', 'ltr', 'rtl') */
   dir?: 'auto' | 'ltr' | 'rtl';
   /** Whether to show a vibration pattern */
   vibrate?: number[];
@@ -29,8 +37,10 @@ export type NotificationShowOptions = {
   timeout?: number;
   /** Custom click handler */
   onClick?: NotificationClickHandler;
-  /** Whether the notification requires attention */
+  /** Whether the notification requires attention (stays until clicked) */
   requireInteraction?: boolean;
+  /** Whether to focus the window on click */
+  focusOnClick?: boolean;
 };
 
 /**
@@ -58,6 +68,7 @@ export function useShowNotification() {
         timeout,
         onClick,
         requireInteraction = false,
+        focusOnClick = true,
         ...rest
       } = options;
 
@@ -81,19 +92,31 @@ export function useShowNotification() {
           image,
           dir,
           vibrate,
-          timestamp: timeout ? Date.now() + timeout : undefined,
           requireInteraction,
           ...rest,
         } as NotificationOptions & { image?: string });
 
         // Set click handler if provided
         if (onClick) {
-          ;(notification as any).onclick = onClick;
-        } else {
-          // Default click handler focuses the window
-          ;(notification as any).onclick = (event: any) => {
+          notification.onclick = (event: Event) => {
             event.preventDefault();
-            ;(notification as any).focus();
+            onClick(event as MouseEvent, notification);
+          };
+        } else {
+          // Default click handler: focus the notification and handle closing
+          notification.onclick = (event: Event) => {
+            event.preventDefault();
+            if (focusOnClick) {
+              try {
+                (notification as any).focus();
+              } catch (e) {
+                // focus() can throw in some environments
+              }
+            }
+            // Close after click if not requireInteraction
+            if (!requireInteraction) {
+              notification.close();
+            }
           };
         }
 
@@ -107,11 +130,7 @@ export function useShowNotification() {
         setLastNotification(notification);
         return notification;
       } catch (err) {
-        const error = {
-          name: 'NotificationShowError',
-          message: err instanceof Error ? err.message : String(err),
-        };
-        console.error(error);
+        console.error('Failed to show notification:', err);
         return null;
       }
     },
@@ -126,8 +145,11 @@ export function useShowNotification() {
   }, [lastNotification]);
 
   const closeAllNotifications = useCallback(() => {
-    const notes = document.querySelectorAll('.dhaval-notification');
-    notes.forEach((note) => note.remove());
+    // Remove any notification elements from DOM
+    if (typeof document !== 'undefined') {
+      const activeNotifications = document.querySelectorAll('.dhaval-notification');
+      activeNotifications.forEach((note) => note.remove());
+    }
     setLastNotification(null);
   }, []);
 
