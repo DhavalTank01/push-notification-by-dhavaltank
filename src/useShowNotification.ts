@@ -41,7 +41,7 @@ export function useShowNotification() {
   const [lastNotification, setLastNotification] = useState<Notification | null>(null);
 
   const showNotification = useCallback(
-    (title: string, options: NotificationShowOptions = {}): Notification | null => {
+    (title: string, options: NotificationShowOptions = { body: '', title: '' }): Notification | null => {
       if (!('Notification' in window)) {
         console.warn('Notification API is not supported');
         return null;
@@ -87,12 +87,12 @@ export function useShowNotification() {
 
         // Set click handler if provided
         if (onClick) {
-          notification.onclick = onClick;
+          ;(notification as any).onclick = onClick;
         } else {
           // Default click handler focuses the window
-          notification.onclick = (event) => {
+          ;(notification as any).onclick = (event: any) => {
             event.preventDefault();
-            notification.focus();
+            ;(notification as any).focus();
           };
         }
 
@@ -106,7 +106,7 @@ export function useShowNotification() {
         setLastNotification(notification);
         return notification;
       } catch (err) {
-        const error: NotificationError = {
+        const error = {
           name: 'NotificationShowError',
           message: err instanceof Error ? err.message : String(err),
         };

@@ -46,7 +46,8 @@ export function useNotificationPermission() {
       setPermissionSteps({
         title: 'Notifications Not Supported',
         message: 'The Notification API is not supported in your browser.',
-        browserSpecific: 'Try updating your browser or using Chrome/Firefox/Edge.',
+        settingsLink: 'go to browser settings',
+        browserSpecific: 'Try updating your browser or using Chrome/Firefox/Edge',
       });
       return;
     }
